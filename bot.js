@@ -196,7 +196,10 @@ async function fetchVolumaticData() {
     }
 }
 
+let isChecking = false;
 async function checkTradeLogic() {
+    if (isChecking) return;
+    isChecking = true;
     try {
         const resLive = await fetch('https://fapi.binance.com/fapi/v1/ticker/price?symbol=ETHUSDT');
         const dataLive = await resLive.json();
@@ -288,6 +291,8 @@ async function checkTradeLogic() {
 
     } catch (err) {
         console.error("Trade Logic Error:", err);
+    } finally {
+        isChecking = false;
     }
 }
 

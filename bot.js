@@ -27,6 +27,7 @@ function saveDB() {
         execSync('git config --global user.email "github-actions[bot]@users.noreply.github.com"');
         execSync('git add database.json');
         execSync('git commit -m "Automated trade update [skip ci]" || echo "No changes to commit"');
+        execSync('git pull origin main --rebase || echo "Failed to pull"');
         execSync('git push origin main || echo "Failed to push"');
         console.log("Committed to GitHub successfully!");
     } catch (e) {

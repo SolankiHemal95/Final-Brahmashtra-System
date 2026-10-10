@@ -125,10 +125,25 @@ function calculateATR(klines, period) {
     return atr;
 }
 
+// Binance API helper to prevent IP blocks
+async function fetchBinance(fapiUrl, spotUrl) {
+    try {
+        const res = await fetch(fapiUrl);
+        if (!res.ok) throw new Error(`FAPI HTTP error: ${res.status}`);
+        return await res.json();
+    } catch (e) {
+        console.log(`FAPI failed, using fallback: ${e.message}`);
+        const res2 = await fetch(spotUrl);
+        return await res2.json();
+    }
+}
+
 async function fetchVolumaticData() {
     try {
-        const res = await fetch('https://fapi.binance.com/fapi/v1/klines?symbol=ETHUSDT&interval=15m&limit=100');
-        const klines = await res.json();
+        const klines = await fetchBinance(
+            'https://fapi.binance.com/fapi/v1/klines?symbol=ETHUSDT&interval=15m&limit=100',
+            'https://api.binance.com/api/v3/klines?symbol=ETHUSDT&interval=15m&limit=100'
+        );
         
         let closes = klines.map(k => parseFloat(k[4]));
         let atr = calculateATR(klines, 10);
@@ -202,14 +217,18 @@ async function checkTradeLogic() {
     if (isChecking) return;
     isChecking = true;
     try {
-        const resLive = await fetch('https://fapi.binance.com/fapi/v1/ticker/price?symbol=ETHUSDT');
-        const dataLive = await resLive.json();
+        const dataLive = await fetchBinance(
+            'https://fapi.binance.com/fapi/v1/ticker/price?symbol=ETHUSDT',
+            'https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT'
+        );
         let livePrice = parseFloat(dataLive.price);
 
         if (!db.volumaticTrend) return;
 
-        const res = await fetch('https://fapi.binance.com/fapi/v1/klines?symbol=ETHUSDT&interval=5m&limit=1');
-        const data = await res.json();
+        const data = await fetchBinance(
+            'https://fapi.binance.com/fapi/v1/klines?symbol=ETHUSDT&interval=5m&limit=1',
+            'https://api.binance.com/api/v3/klines?symbol=ETHUSDT&interval=5m&limit=1'
+        );
         const currentCandleTime = data[0][0];
         const openPrice = parseFloat(data[0][1]);
         

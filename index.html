@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live ETH Futures Dashboard</title>
+    <link rel="stylesheet" href="style.css?v=11">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
+</head>
+<body style="flex-direction: column; align-items: center;">
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+    
+    <div class="dashboard-container single-box" id="main-dashboard" style="display: flex; gap: 30px; width: 100%; max-width: 1400px; justify-content: flex-start; align-items: stretch; flex-wrap: wrap;">
+        <!-- Box 1: ETH Futures Data -->
+        <div class="glass-panel main-panel" style="flex: 1; min-width: 350px;">
+            <h2 class="panel-title">ETH/USDT Futures</h2>
+            <div class="price-container">
+                <span class="currency-symbol">$</span>
+                <span id="eth-price" class="live-price" style="font-size: 5rem;">Loading...</span>
+            </div>
+            <div class="price-details">
+                <div class="detail-item">
+                    <span class="detail-label">24h Change</span>
+                    <span id="eth-change" class="detail-value">--</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Funding Rate</span>
+                    <span id="eth-funding" class="detail-value">--</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Box 2: Empty AI Indicator 1 -->
+        <div class="glass-panel main-panel indicator-box" style="flex: 1; min-width: 300px; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: all 0.3s ease;">
+            <h2 class="panel-title" style="color: var(--accent);">AI Indicator 1</h2>
+            <div style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 600; color: var(--text-secondary); margin-top: 10px; line-height: 1.2; text-align: center;">Waiting for Setup...</div>
+        </div>
+
+    </div>
+
+    <!-- Live Trade Memory Section -->
+    <div class="dashboard-container" style="width: 100%; max-width: 1400px; margin-top: 30px; animation-delay: 0.2s;">
+        <div class="glass-panel" style="width: 100%; padding: 40px;">
+            <h2 class="panel-title" style="display:flex; justify-content: space-between; align-items:center; text-transform: none; margin-bottom: 30px; flex-wrap: wrap; gap: 15px;">
+                <span style="text-transform: uppercase; letter-spacing: 2px;">Live Trade Memory</span>
+                <div style="display: flex; gap: 25px; align-items: center; background: rgba(0,0,0,0.2); padding: 10px 20px; border-radius: 12px; border: 1px solid var(--glass-border);">
+                    <span style="font-size:0.95rem; color: var(--text-secondary); font-weight: 600;">Total Trades: <span id="total-trades" style="color:var(--text-primary); font-weight: 800;">0</span></span>
+                    <span style="font-size:0.95rem; color: var(--text-secondary); font-weight: 600;">Wins: <span id="total-wins" style="color:var(--positive); font-weight: 800;">0</span></span>
+                    <span style="font-size:0.95rem; color: var(--text-secondary); font-weight: 600;">Losses: <span id="total-losses" style="color:var(--negative); font-weight: 800;">0</span></span>
+                    <span style="font-size:0.95rem; color: var(--text-secondary); font-weight: 600;">Win Rate: <span id="win-rate" style="color:var(--text-primary); font-weight: 800;">0%</span></span>
+                    <span style="font-size:1.1rem; color: var(--accent); font-weight: 600; margin-left: 10px;">Total PNL: <span id="total-pnl" style="font-weight:800; font-size: 1.4rem; color:var(--text-primary);">0</span> pts</span>
+                </div>
+            </h2>
+            
+            <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 15px 20px; border-radius: 12px; border: 1px solid var(--glass-border);">
+                <div id="active-order-display" style="font-size: 1.05rem; font-weight: 600; color: var(--text-primary);">
+                    No Active Order
+                </div>
+                <button id="delete-selected-trades" class="glass-btn" style="padding: 8px 20px; font-size: 0.9rem; color: var(--negative); border-color: var(--negative);">Delete Selected</button>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table class="trade-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 40px;"><input type="checkbox" id="select-all-trades"></th>
+                            <th style="width: 50px;">#</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Entry Price</th>
+                            <th>Target / SL</th>
+                            <th>Placed At</th>
+                            <th>Executed At</th>
+                            <th>Closed At</th>
+                            <th>Duration</th>
+                            <th>PNL (Pts)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="trade-history-body">
+                        <!-- History Rows Rendered Here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js?v=25"></script>
+</body>
+</html>

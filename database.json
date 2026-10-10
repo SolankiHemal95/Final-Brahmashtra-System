@@ -1,14 +1,31 @@
 {
-  "tradeHistory": [],
+  "tradeHistory": [
+    {
+      "id": 1791642452213,
+      "type": "BUY",
+      "open_price": 2497.94,
+      "limit_price": 2494.94,
+      "target_price": 2497.94,
+      "sl_price": 2464.94,
+      "status": "NOT EXECUTED",
+      "placed_time": "Sat, 10/10, 7:57:32 PM",
+      "executed_time": "-",
+      "completed_time": "Sat, 10/10, 8:12:14 PM",
+      "executed_timestamp": 0,
+      "completed_timestamp": 0,
+      "duration": "-",
+      "pnl": 0
+    }
+  ],
   "activeOrder": {
-    "id": 1791642452213,
+    "id": 1791643334664,
     "type": "BUY",
-    "open_price": 2497.94,
-    "limit_price": 2494.94,
-    "target_price": 2497.94,
-    "sl_price": 2464.94,
+    "open_price": 2512.12,
+    "limit_price": 2509.12,
+    "target_price": 2512.12,
+    "sl_price": 2479.12,
     "status": "PENDING",
-    "placed_time": "Sat, 10/10, 7:57:32 PM",
+    "placed_time": "Sat, 10/10, 8:12:14 PM",
     "executed_time": "-",
     "completed_time": "-",
     "executed_timestamp": 0,
@@ -16,7 +33,7 @@
     "duration": "-",
     "pnl": 0
   },
-  "lastCandleOpenTime": 1791642300000,
+  "lastCandleOpenTime": 1791643200000,
   "volumaticTrend": "BUY",
   "volumaticTrendTime": "Oct 10, 04:00 PM",
   "volumaticTrendPrice": "2493.95"

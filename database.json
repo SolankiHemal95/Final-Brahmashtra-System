@@ -1,8 +1,8 @@
 {
   "tradeHistory": [],
   "activeOrder": null,
-  "lastCandleOpenTime": 0,
-  "volumaticTrend": null,
-  "volumaticTrendTime": null,
-  "volumaticTrendPrice": null
+  "lastCandleOpenTime": 1791639600000,
+  "volumaticTrend": "BUY",
+  "volumaticTrendTime": "Oct 10, 05:00 PM",
+  "volumaticTrendPrice": "2497.59"
 }

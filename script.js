@@ -44,7 +44,27 @@ async function fetchLiveData() {
             window.checkTradeLogic(currentPrice);
         }
     } catch (error) {
-        console.error('Error fetching live data:', error);
+        console.error('Error fetching live data from fapi, trying fallback:', error);
+        try {
+            const fallbackResponse = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=ETHUSDT');
+            const data = await fallbackResponse.json();
+            const currentPrice = parseFloat(data.lastPrice);
+            priceElement.textContent = formatPrice(currentPrice);
+            const priceChangePercent = parseFloat(data.priceChangePercent);
+            changeElement.textContent = formatPercentage(priceChangePercent);
+            if (priceChangePercent >= 0) {
+                changeElement.classList.add('positive');
+                changeElement.classList.remove('negative');
+            } else {
+                changeElement.classList.add('negative');
+                changeElement.classList.remove('positive');
+            }
+            if (window.checkTradeLogic) {
+                window.checkTradeLogic(currentPrice);
+            }
+        } catch(e2) {
+            console.error('Fallback also failed:', e2);
+        }
     }
 }
 
@@ -106,6 +126,9 @@ async function syncWithDatabase() {
                 }
             }
             renderTradeHistory();
+            if (window.checkTradeLogic) {
+                updateActiveOrderUI(null);
+            }
         }
     } catch(e) {
         console.error("Error syncing database:", e);
@@ -133,22 +156,28 @@ function updateActiveOrderUI(livePrice) {
 
     let color = activeOrder.type === 'BUY' ? 'var(--positive)' : 'var(--negative)';
     if (activeOrder.status === 'PENDING') {
-        let diff = Math.abs(livePrice - activeOrder.limit_price).toFixed(2);
+        let diffText = livePrice ? `(Current distance: $${Math.abs(livePrice - activeOrder.limit_price).toFixed(2)})` : '';
         display.innerHTML = `
             <span style="color: ${color}; font-weight:800;">${activeOrder.type}</span> 
             LIMIT ORDER PENDING @ $${activeOrder.limit_price.toFixed(2)} 
-            <span style="font-size: 0.9rem; color: var(--text-secondary); margin-left: 10px;">(Current distance: $${diff})</span>
+            <span style="font-size: 0.9rem; color: var(--text-secondary); margin-left: 10px;">${diffText}</span>
         `;
         display.style.borderLeft = 'none';
         display.style.background = 'none';
     } else if (activeOrder.status === 'EXECUTED') {
-        let pnlLive = activeOrder.type === 'BUY' ? (livePrice - activeOrder.limit_price) : (activeOrder.limit_price - livePrice);
-        let pnlColor = pnlLive >= 0 ? 'var(--positive)' : 'var(--negative)';
+        let pnlLiveText = '';
+        let pnlColor = 'var(--text-primary)';
+        if (livePrice) {
+            let pnlLive = activeOrder.type === 'BUY' ? (livePrice - activeOrder.limit_price) : (activeOrder.limit_price - livePrice);
+            pnlColor = pnlLive >= 0 ? 'var(--positive)' : 'var(--negative)';
+            pnlLiveText = `Live PNL: ${pnlLive.toFixed(2)} pts`;
+        }
+        
         display.innerHTML = `
             <span style="color: ${color}; font-weight:800;">${activeOrder.type}</span> 
             ORDER EXECUTED @ $${activeOrder.limit_price.toFixed(2)} 
             <span style="font-size: 0.9rem; color: var(--text-secondary); margin-left: 10px;">Target: $${activeOrder.target_price.toFixed(2)} | SL: $${activeOrder.sl_price.toFixed(2)}</span>
-            <span style="font-size: 1.1rem; color: ${pnlColor}; font-weight: 800; margin-left: 20px;">Live PNL: ${pnlLive.toFixed(2)} pts</span>
+            <span style="font-size: 1.1rem; color: ${pnlColor}; font-weight: 800; margin-left: 20px;">${pnlLiveText}</span>
             <span style="font-size: 0.85rem; color: #00d2ff; font-weight: 700; margin-left: 15px; text-transform: uppercase;">● Active Monitoring</span>
         `;
         display.style.borderLeft = '4px solid #00d2ff';
